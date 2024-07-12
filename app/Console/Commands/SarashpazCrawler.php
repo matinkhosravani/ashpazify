@@ -73,7 +73,7 @@ class SarashpazCrawler extends Command
                 $ingredientModel = Ingredient::query()->firstOrCreate(["title" => $ingredientName]);
                 $unitInfo = $this->splitUnit($this->persianToEnglishNumbers($ingredient->first("div.ing-unit")->text()));
                 $unit = Unit::query()->firstOrCreate(['name' => $unitInfo['unit']]);
-                if (IngredientRecipe::query()->where(['recipe_id' => $recipe->id , 'ingredient_id' => $ingredientModel->id])->first() != null){
+                if (IngredientRecipe::query()->where(['recipe_id' => $recipe->id , 'ingredient_id' => $ingredientModel->id])->first() == null){
                     IngredientRecipe::query()->create(
                         [
                             'recipe_id' => $recipe->id,
