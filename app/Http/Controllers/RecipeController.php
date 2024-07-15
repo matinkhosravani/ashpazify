@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Filters\Recipe\Category;
 use App\Filters\Recipe\Ingredient;
 use App\Filters\Recipe\Search;
+use App\Filters\Recipe\Seed;
 use App\Http\Resources\RecipeCollection;
 use App\Http\Resources\RecipeResource;
 use App\Models\Recipe;
 use Illuminate\Http\Request;
 use Illuminate\Pipeline\Pipeline;
+use Illuminate\Support\Facades\Redis;
 
 class RecipeController extends Controller
 {
@@ -23,11 +25,13 @@ class RecipeController extends Controller
                 Search::class,
                 Category::class,
                 Ingredient::class,
+                Seed::class
             ])
             ->thenReturn();
 
-
-        return new RecipeCollection($recipes->with("category")->with("ingredients.pivot.unit")->paginate($request->perPage ?? 10));
+        $recipes = $recipes->with("category")->with("ingredients.pivot.unit")->inRandomOrder()->paginate($request->perPage ?? 10);
+        $request->merge(['recipes' => $recipes]);
+        return new RecipeCollection($recipes);
     }
 
     /**
