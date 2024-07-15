@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\Recipe\Category;
 use App\Filters\Recipe\Ingredient;
 use App\Filters\Recipe\Search;
 use App\Http\Resources\RecipeCollection;
@@ -20,6 +21,7 @@ class RecipeController extends Controller
         $recipes = $pipeline->send(Recipe::query())
             ->through([
                 Search::class,
+                Category::class,
                 Ingredient::class,
             ])
             ->thenReturn();
